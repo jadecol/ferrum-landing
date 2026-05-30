@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import ThemeToggle from './ThemeToggle'
 import '../styles/Header.css'
 
 const NAV_LINKS = [
@@ -73,6 +74,7 @@ export default function Header() {
           </nav>
 
           <div className="header-right">
+            <ThemeToggle />
             <a href="#contacto" className="btn btn-primary" onClick={(e) => handleNavClick(e, '#contacto')}>
               Diagnóstico Gratuito
             </a>
