@@ -25,114 +25,172 @@ const SYSTEMS = [
   },
 ]
 
-const TERM_SCRIPT = [
-  { cls: 'cmt', txt: '# Ferrum OS · Due Diligence — Lote: Bogotá NR-2047', delay: 0 },
-  { cls: 'cmd', txt: '$ potEngine.query(lote="NR-2047", municipio="Bogota")', delay: 600 },
-  { cls: 'out', txt: '→ Sincronizando POT 2024 (Decreto 555)...', delay: 1800 },
-  { cls: 'val', txt: '  Zona: Residencial — Tratamiento renovación urbana', delay: 2600 },
-  { cls: 'val', txt: '  IO: 0.65 · IC: 3.2 · Altura máxima: 12 pisos', delay: 3200 },
-  { cls: 'cmd', txt: '$ normCore.check(lote, flags=["ambiental","vial","pat"])', delay: 3900 },
-  { cls: 'out', txt: '→ NormCore™ ejecutando — 247 variables activas...', delay: 5200 },
-  { cls: 'ok',  txt: '  ✓ Ambiental: sin restricción (POMCA verificado)', delay: 6100 },
-  { cls: 'ok',  txt: '  ✓ Patrimonio: fuera de área de influencia', delay: 6800 },
-  { cls: 'warn',txt: '  ⚠ Vial: afectación 8m — plan vial municipal', delay: 7400 },
-  { cls: 'cmd', txt: '$ urbanTwin.model(area_neta=11200, io=0.65, ic=3.2)', delay: 8100 },
-  { cls: 'ok',  txt: '  ✓ m² vendibles netos: 32.840 m²', delay: 9400 },
-  { cls: 'ok',  txt: '  ✓ Score de viabilidad: 91/100 — PROCEDER ✦', delay: 10100 },
+// Each sequence is one "analysis run" — loops forever
+const SEQUENCES = [
+  [
+    { cls: 'cmt', txt: '# ─── Análisis Predio: Bogotá NR-2047 ───────────────' },
+    { cls: 'cmd', txt: '$ potEngine.query("NR-2047", "Bogota")' },
+    { cls: 'out', txt: '  → Cargando POT 2024 · Decreto 555...' },
+    { cls: 'val', txt: '  IO: 0.65  IC: 3.2  Altura: 12 pisos' },
+    { cls: 'val', txt: '  Zona: Residencial — Renovación urbana' },
+    { cls: 'cmd', txt: '$ normCore.check("NR-2047", ["ambiental","vial","pat"])' },
+    { cls: 'out', txt: '  → Ejecutando 247 variables normativas...' },
+    { cls: 'ok',  txt: '  ✓ Ambiental   : sin restricción  [POMCA OK]' },
+    { cls: 'ok',  txt: '  ✓ Patrimonio  : fuera de área de influencia' },
+    { cls: 'warn',txt: '  ⚠ Vial        : afectación 8m · plan vial' },
+    { cls: 'cmd', txt: '$ urbanTwin.model(11200, io=0.65, ic=3.2)' },
+    { cls: 'out', txt: '  → Modelando gemelo digital 4D...' },
+    { cls: 'ok',  txt: '  ✓ m² vendibles netos  : 32.840 m²' },
+    { cls: 'ok',  txt: '  ✓ Score viabilidad    : 91 / 100' },
+    { cls: 'ok',  txt: '  ✓ RECOMENDACIÓN       : PROCEDER ✦' },
+    { cls: 'cmt', txt: '# ─────────────────────────────────────────────────' },
+  ],
+  [
+    { cls: 'cmt', txt: '# ─── Análisis Predio: Medellín ZU-0318 ────────────' },
+    { cls: 'cmd', txt: '$ potEngine.query("ZU-0318", "Medellin")' },
+    { cls: 'out', txt: '  → Cargando POT 2023 · Acuerdo 48...' },
+    { cls: 'val', txt: '  IO: 0.70  IC: 4.5  Altura: 20 pisos' },
+    { cls: 'val', txt: '  Zona: Centralidad — Desarrollo' },
+    { cls: 'cmd', txt: '$ normCore.check("ZU-0318", ["ambiental","arqueológico"])' },
+    { cls: 'out', txt: '  → Ejecutando 247 variables normativas...' },
+    { cls: 'ok',  txt: '  ✓ Ambiental      : sin restricción  [CORANTIOQUIA]' },
+    { cls: 'warn',txt: '  ⚠ Arqueológico   : zona de interés — requiere ICANH' },
+    { cls: 'ok',  txt: '  ✓ Riesgo sísmico : zona II · norma NSR-10' },
+    { cls: 'cmd', txt: '$ urbanTwin.model(8400, io=0.70, ic=4.5)' },
+    { cls: 'out', txt: '  → Modelando gemelo digital 4D...' },
+    { cls: 'ok',  txt: '  ✓ m² vendibles netos  : 26.460 m²' },
+    { cls: 'warn',txt: '  ⚠ Score viabilidad    : 76 / 100  [revisar ICANH]' },
+    { cls: 'cmt', txt: '# ─────────────────────────────────────────────────' },
+  ],
+  [
+    { cls: 'cmt', txt: '# ─── Due Diligence: Cali SC-7701 ──────────────────' },
+    { cls: 'cmd', txt: '$ normCore.dueDiligence("SC-7701", "Cali")' },
+    { cls: 'out', txt: '  → Sincronizando POT 2014 + ajuste 2021...' },
+    { cls: 'val', txt: '  Tratamiento: Consolidación residencial' },
+    { cls: 'val', txt: '  Densidad max: 250 viv/ha · Área mín: 120 m²' },
+    { cls: 'cmd', txt: '$ normCore.check("SC-7701", ["ambiental","riesgo"])' },
+    { cls: 'out', txt: '  → Cruzando POMCH río Cauca + zonificación...' },
+    { cls: 'warn',txt: '  ⚠ Ronda hídrica : 30m afectación lateral' },
+    { cls: 'ok',  txt: '  ✓ Riesgo sísmico : zona III · microzonificación' },
+    { cls: 'ok',  txt: '  ✓ Servicios      : cobertura 100% disponible' },
+    { cls: 'cmd', txt: '$ urbanTwin.model(6800, io=0.60, ic=2.8)' },
+    { cls: 'out', txt: '  → Descontando afectaciones reales...' },
+    { cls: 'ok',  txt: '  ✓ Área neta útil       : 4.760 m² (-30m ronda)' },
+    { cls: 'ok',  txt: '  ✓ m² vendibles netos   : 13.328 m²' },
+    { cls: 'ok',  txt: '  ✓ Score viabilidad     : 83 / 100  ✦' },
+    { cls: 'cmt', txt: '# ─────────────────────────────────────────────────' },
+  ],
 ]
 
-function typeWriter(container, meterEl) {
-  container.innerHTML = ''
-  
-  TERM_SCRIPT.forEach(({ cls, txt, delay }) => {
-    setTimeout(() => {
-      const line = document.createElement('div')
-      line.className = `term-line ${cls}`
-      container.appendChild(line)
-
-      let i = 0
-      const speed = cls === 'cmd' ? 22 : 10
-      const cursor = document.createElement('span')
-      cursor.className = 'term-cursor'
-      cursor.textContent = '█'
-      line.appendChild(cursor)
-
-      const iv = setInterval(() => {
-        line.textContent = txt.slice(0, ++i)
-        if (i < txt.length) {
-          line.appendChild(cursor)
-        } else {
-          cursor.remove()
-          clearInterval(iv)
-        }
-        container.scrollTop = container.scrollHeight
-      }, speed)
-    }, delay)
-  })
-
-  // Animate meter after typing finishes
-  setTimeout(() => {
-    if (meterEl) {
-      meterEl.style.transition = 'width 1.4s cubic-bezier(0.4,0,0.2,1)'
-      meterEl.style.width = '91%'
-    }
-  }, 11200)
-}
-
 export default function FerrumOS() {
-  const termRef  = useRef(null)
-  const meterRef = useRef(null)
-  const ranRef   = useRef(false)
+  const termRef   = useRef(null)
+  const meterRef  = useRef(null)
+  const stateRef  = useRef({ seqIdx: 0, lineIdx: 0, charIdx: 0, timers: [] })
   const headerRef = useScrollReveal()
 
   useEffect(() => {
-    // Strategy: poll every 200ms until element is in view OR 5s timeout auto-fires
-    let attempts = 0
-    const MAX = 25 // 5 seconds
+    const container = termRef.current
+    const meter     = meterRef.current
+    if (!container) return
 
-    const tryFire = () => {
-      if (ranRef.current) return
-      const el = termRef.current
-      if (!el) return
+    const state = stateRef.current
 
-      const rect = el.getBoundingClientRect()
-      const inView = rect.top < window.innerHeight + 100
+    // Animate meter to target score
+    const scores = [91, 76, 83]
+    const animateMeter = (score) => {
+      if (!meter) return
+      meter.style.transition = 'none'
+      meter.style.width = '0%'
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          meter.style.transition = 'width 1.6s cubic-bezier(0.4,0,0.2,1)'
+          meter.style.width = `${score}%`
+        })
+      })
+    }
 
-      if (inView) {
-        ranRef.current = true
-        typeWriter(el, meterRef.current)
-        return
+    // Type one character at a time, then move to next line/sequence
+    const typeNext = () => {
+      const seq  = SEQUENCES[state.seqIdx]
+      const line = seq[state.lineIdx]
+      const txt  = line.txt
+
+      // Create new line element if first char
+      if (state.charIdx === 0) {
+        const el = document.createElement('div')
+        el.className = `term-line ${line.cls}`
+        el.dataset.lineId = `${state.seqIdx}-${state.lineIdx}`
+        container.appendChild(el)
+
+        // Keep max 22 lines visible
+        while (container.children.length > 22) {
+          container.removeChild(container.firstChild)
+        }
       }
 
-      attempts++
-      if (attempts < MAX) {
-        setTimeout(tryFire, 200)
+      // Get current line element
+      const lineEl = container.querySelector(
+        `[data-line-id="${state.seqIdx}-${state.lineIdx}"]`
+      )
+      if (!lineEl) { advanceLine(); return }
+
+      // Type next char
+      lineEl.textContent = txt.slice(0, state.charIdx + 1)
+      container.scrollTop = container.scrollHeight
+      state.charIdx++
+
+      if (state.charIdx < txt.length) {
+        // Still typing this line
+        const speed = line.cls === 'cmd' ? 28 : 12
+        const t = setTimeout(typeNext, speed)
+        state.timers.push(t)
+      } else {
+        // Line complete — pause then advance
+        const pause = line.cls === 'cmd' ? 320 : 80
+        const t = setTimeout(advanceLine, pause)
+        state.timers.push(t)
       }
     }
 
-    // Start polling after component mounts
-    const init = setTimeout(tryFire, 300)
+    const advanceLine = () => {
+      const seq = SEQUENCES[state.seqIdx]
+      state.charIdx = 0
+      state.lineIdx++
 
-    // Also attach scroll listener as backup
-    const onScroll = () => {
-      if (ranRef.current) {
-        window.removeEventListener('scroll', onScroll)
-        return
-      }
-      const el = termRef.current
-      if (!el) return
-      const rect = el.getBoundingClientRect()
-      if (rect.top < window.innerHeight + 100) {
-        ranRef.current = true
-        window.removeEventListener('scroll', onScroll)
-        typeWriter(el, meterRef.current)
+      if (state.lineIdx >= seq.length) {
+        // Sequence complete — animate meter, pause, then next sequence
+        const scoreEl = document.querySelector('.m-val')
+        const scores = [91, 76, 83]
+        const score = scores[state.seqIdx]
+        if (scoreEl) scoreEl.textContent = `${score} / 100`
+        animateMeter(score)
+
+        state.lineIdx = 0
+        state.seqIdx  = (state.seqIdx + 1) % SEQUENCES.length
+
+        // Pause between sequences, then add separator and continue
+        const t = setTimeout(() => {
+          const sep = document.createElement('div')
+          sep.className = 'term-line cmt'
+          sep.textContent = ''
+          container.appendChild(sep)
+          const t2 = setTimeout(typeNext, 600)
+          state.timers.push(t2)
+        }, 2800)
+        state.timers.push(t)
+      } else {
+        const t = setTimeout(typeNext, 40)
+        state.timers.push(t)
       }
     }
-    window.addEventListener('scroll', onScroll, { passive: true })
+
+    // Start immediately
+    const t = setTimeout(typeNext, 400)
+    state.timers.push(t)
 
     return () => {
-      clearTimeout(init)
-      window.removeEventListener('scroll', onScroll)
+      state.timers.forEach(clearTimeout)
+      state.timers = []
     }
   }, [])
 
@@ -162,8 +220,10 @@ export default function FerrumOS() {
           ))}
         </div>
 
-        {/* Two-column: description + terminal */}
+        {/* Two-column layout */}
         <div className="tech-layout reveal" ref={useScrollReveal()}>
+
+          {/* Left */}
           <div className="tech-left">
             <h3 className="tech-left-title">Motor normativo en tiempo real</h3>
             <p className="tech-left-desc">
@@ -182,19 +242,20 @@ export default function FerrumOS() {
             </button>
           </div>
 
+          {/* Right: terminal */}
           <div className="twin-visual glass-gold">
             <div className="twin-header">
               <span className="twin-dot twin-dot-o" />
               <span className="twin-dot twin-dot-y" />
               <span className="twin-dot twin-dot-s" />
-              <span className="twin-title">FERRUM OS · POT ENGINE™ v4.2 — LIVE</span>
+              <span className="twin-title">FERRUM OS · POT ENGINE™ v4.2</span>
               <span className="twin-status">● EN VIVO</span>
             </div>
             <div className="twin-body" ref={termRef} />
             <div className="twin-meter">
               <div className="m-row">
                 <span className="m-lbl">Score Viabilidad NormCore™</span>
-                <span className="m-val">91 / 100</span>
+                <span className="m-val">— / 100</span>
               </div>
               <div className="m-bar">
                 <div ref={meterRef} className="meter-fill" style={{ width: '0%' }} />

@@ -226,3 +226,37 @@
   0%, 100% { opacity: 1; }
   50%       { opacity: 0.4; }
 }
+
+/* ══ THEME: LIGHT MODE — terminal text must stay visible ══ */
+:root[style*="--bg: #F5F4F0"] .twin-visual {
+  background: rgba(20,20,20,0.92) !important;
+  border-color: rgba(192,136,0,0.3) !important;
+}
+:root[style*="--bg: #F5F4F0"] .twin-header {
+  background: rgba(14,14,15,0.95) !important;
+  border-color: rgba(255,255,255,0.1) !important;
+}
+:root[style*="--bg: #F5F4F0"] .twin-body {
+  background: rgba(10,10,10,0.95) !important;
+}
+:root[style*="--bg: #F5F4F0"] .twin-body .term-line.cmt  { color: #666 !important; }
+:root[style*="--bg: #F5F4F0"] .twin-body .term-line.cmd  { color: #F9DA1B !important; }
+:root[style*="--bg: #F5F4F0"] .twin-body .term-line.out  { color: #aaa !important; }
+:root[style*="--bg: #F5F4F0"] .twin-body .term-line.val  { color: #E7E6E6 !important; }
+:root[style*="--bg: #F5F4F0"] .twin-body .term-line.ok   { color: #EABD0C !important; }
+:root[style*="--bg: #F5F4F0"] .twin-body .term-line.warn { color: #E49800 !important; }
+:root[style*="--bg: #F5F4F0"] .twin-meter {
+  background: rgba(14,14,15,0.9) !important;
+  border-color: rgba(255,255,255,0.08) !important;
+}
+:root[style*="--bg: #F5F4F0"] .m-lbl { color: #666 !important; }
+:root[style*="--bg: #F5F4F0"] .m-val { color: #EABD0C !important; }
+:root[style*="--bg: #F5F4F0"] .twin-title { color: #888 !important; }
+
+/* ══ THEME: CORPORATE (dark blue) ══ */
+:root[style*="--bg: #0A0F1E"] .twin-body .term-line.val { color: #c8d8ff !important; }
+
+/* ══ ALL THEMES: terminal body always dark ══ */
+.twin-body {
+  background: rgba(8, 8, 10, 0.85);
+}
