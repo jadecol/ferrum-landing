@@ -8,6 +8,7 @@ import Servicios from './components/Servicios'
 import FerrumOS  from './components/FerrumOS'
 import Formulario from './components/Formulario'
 import Footer    from './components/Footer'
+import WhatsApp  from './components/WhatsApp'
 
 export default function App() {
   useIntro()
@@ -44,6 +45,7 @@ export default function App() {
         <Formulario />
       </main>
       <Footer />
+      <WhatsApp />
     </>
   )
 }

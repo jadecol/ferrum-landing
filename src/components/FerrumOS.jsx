@@ -61,43 +61,66 @@ const TERM_SCRIPT = [
   { cls: 'ok',  txt: '  ✓ Score de viabilidad: 91/100 — PROCEDER' },
 ]
 
+function runTyping(container) {
+  container.innerHTML = ''
+  let delay = 0
+
+  TERM_SCRIPT.forEach((line) => {
+    setTimeout(() => {
+      const el = document.createElement('div')
+      el.className = `term-line ${line.cls}`
+      container.appendChild(el)
+      const chars = line.txt.split('')
+      let ci = 0
+      const speed = line.cls === 'cmd' ? 16 : 7
+      const iv = setInterval(() => {
+        el.textContent += chars[ci++]
+        if (ci >= chars.length) clearInterval(iv)
+        container.scrollTop = container.scrollHeight
+      }, speed)
+    }, delay)
+
+    const charSpeed = line.cls === 'cmd' ? 16 : 7
+    delay += line.txt.length * charSpeed + (line.cls === 'cmd' ? 280 : 90)
+  })
+}
+
 export default function FerrumOS() {
-  const headerRef  = useScrollReveal()
-  const termRef    = useRef(null)
-  const ranRef     = useRef(false)
+  const headerRef = useScrollReveal()
+  const termRef   = useRef(null)
+  const ranRef    = useRef(false)
+  const meterRef  = useRef(null)
 
   useEffect(() => {
-    const terminal = termRef.current
-    if (!terminal) return
+    // Use a small delay to ensure DOM is painted, then observe
+    const timer = setTimeout(() => {
+      const terminal = termRef.current
+      if (!terminal) return
 
-    const observer = new IntersectionObserver(([entry]) => {
-      if (!entry.isIntersecting || ranRef.current) return
-      ranRef.current = true
-      terminal.innerHTML = ''
-      let delay = 0
+      // If already visible on mount, run immediately
+      const rect = terminal.getBoundingClientRect()
+      if (rect.top < window.innerHeight * 0.85 && !ranRef.current) {
+        ranRef.current = true
+        runTyping(terminal)
+        if (meterRef.current) meterRef.current.style.width = '91%'
+        return
+      }
 
-      TERM_SCRIPT.forEach((line) => {
-        setTimeout(() => {
-          const el = document.createElement('div')
-          el.className = `term-line ${line.cls}`
-          terminal.appendChild(el)
-          const chars = line.txt.split('')
-          let ci = 0
-          const speed = line.cls === 'cmd' ? 18 : 8
-          const iv = setInterval(() => {
-            el.textContent += chars[ci++]
-            if (ci >= chars.length) clearInterval(iv)
-            terminal.scrollTop = terminal.scrollHeight
-          }, speed)
-        }, delay)
-        delay += line.cls === 'cmd'
-          ? line.txt.length * 18 + 300
-          : line.txt.length * 8 + 100
-      })
-    }, { threshold: 0.3 })
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (!entry.isIntersecting || ranRef.current) return
+          ranRef.current = true
+          observer.disconnect()
+          runTyping(terminal)
+          if (meterRef.current) meterRef.current.style.width = '91%'
+        },
+        { threshold: 0.2, rootMargin: '0px 0px -60px 0px' }
+      )
+      observer.observe(terminal)
+      return () => observer.disconnect()
+    }, 400)
 
-    observer.observe(terminal)
-    return () => observer.disconnect()
+    return () => clearTimeout(timer)
   }, [])
 
   return (
@@ -111,8 +134,9 @@ export default function FerrumOS() {
             Sistemas que<br /><span>construimos nosotros.</span>
           </h2>
           <p className="section-sub">
-            No usamos software de terceros para lo que importa. Desarrollamos nuestras propias herramientas en
-            Java, C#, Python y BIM — sistemas que conocen la normativa colombiana desde adentro.
+            No usamos software de terceros para lo que importa. Desarrollamos nuestras propias
+            herramientas en Java, C#, Python y BIM — sistemas que conocen la normativa colombiana
+            desde adentro y se actualizan con cada cambio de POT o decreto nacional.
           </p>
         </div>
 
@@ -125,19 +149,56 @@ export default function FerrumOS() {
           ))}
         </div>
 
-        {/* Terminal */}
-        <div className="tech-twin glass-gold reveal" ref={useScrollReveal()}>
-          <div className="twin-header">
-            <span className="twin-dot twin-dot-o" /><span className="twin-dot twin-dot-y" /><span className="twin-dot twin-dot-s" />
-            <span className="twin-title">FERRUM OS · POT ENGINE™ v4.2 — LIVE</span>
+        {/* Terminal — two column layout */}
+        <div className="tech-layout reveal" ref={useScrollReveal()}>
+
+          {/* Left: description */}
+          <div className="tech-left">
+            <h3 className="tech-left-title">Motor normativo en tiempo real</h3>
+            <p className="tech-left-desc">
+              Cada consulta procesa el POT actualizado del municipio, cruza normativa
+              ambiental nacional y modela los m² vendibles reales del predio —
+              todo antes de que el cliente invierta un peso.
+            </p>
+            <ul className="tech-left-list">
+              <li><span className="tl-dot" />247 variables normativas analizadas por predio</li>
+              <li><span className="tl-dot" />Actualización automática ante cambios de decreto</li>
+              <li><span className="tl-dot" />Score de viabilidad 0–100 con trazabilidad completa</li>
+              <li><span className="tl-dot" />Resultado disponible en máximo 72 horas</li>
+            </ul>
+            <button
+              className="btn btn-primary tech-cta-btn"
+              onClick={() => {
+                const el = document.querySelector('#contacto')
+                if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 86, behavior: 'smooth' })
+              }}
+            >
+              Solicitar análisis de mi predio →
+            </button>
           </div>
-          <div className="twin-body" ref={termRef} />
-          <div className="twin-meter">
-            <div className="m-row">
-              <span className="m-lbl">Score Viabilidad NormCore™</span>
-              <span className="m-val">91 / 100</span>
+
+          {/* Right: terminal */}
+          <div className="twin-visual glass-gold">
+            <div className="twin-header">
+              <span className="twin-dot twin-dot-o" />
+              <span className="twin-dot twin-dot-y" />
+              <span className="twin-dot twin-dot-s" />
+              <span className="twin-title">FERRUM OS · POT ENGINE™ v4.2 — LIVE</span>
             </div>
-            <div className="m-bar"><div className="meter-fill" style={{ width: '91%', animationDelay: '3s', animationDuration: '1.5s' }} /></div>
+            <div className="twin-body" ref={termRef} />
+            <div className="twin-meter">
+              <div className="m-row">
+                <span className="m-lbl">Score Viabilidad NormCore™</span>
+                <span className="m-val">91 / 100</span>
+              </div>
+              <div className="m-bar">
+                <div
+                  ref={meterRef}
+                  className="meter-fill"
+                  style={{ width: '0%', transition: 'width 1.5s cubic-bezier(0.4,0,0.2,1) 3.2s' }}
+                />
+              </div>
+            </div>
           </div>
         </div>
 
