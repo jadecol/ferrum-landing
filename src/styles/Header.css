@@ -1,0 +1,125 @@
+/* ── FERRUM LOGO ── */
+.ferrum-logo {
+  display: inline-flex; align-items: center;
+  gap: 0; cursor: pointer; flex-shrink: 0;
+}
+.ferrum-wm { display: flex; flex-direction: column; }
+.ferrum-n {
+  font-size: 20px; font-weight: 800;
+  letter-spacing: 0.06em; color: var(--text); line-height: 1;
+}
+.ferrum-s {
+  font-size: 7px; font-weight: 600;
+  letter-spacing: 0.28em; color: var(--acc);
+  text-transform: uppercase; line-height: 1; margin-top: 3px;
+}
+.ferrum-b {
+  width: 24px; height: 32px;
+  position: relative; margin-left: 5px; flex-shrink: 0;
+}
+.ferrum-b::before {
+  content: ''; position: absolute;
+  right: 0; top: 0; bottom: 0;
+  width: 2px; background: var(--acc);
+}
+.ferrum-b::after {
+  content: ''; position: absolute;
+  right: 0; bottom: 0;
+  width: 12px; height: 2px; background: var(--acc);
+}
+
+/* ── HEADER ── */
+.header {
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 1000; padding: 18px 0;
+  transition: padding 0.4s cubic-bezier(0.4,0,0.2,1);
+}
+.header.scrolled { padding: 10px 0; }
+
+.header-inner {
+  display: flex; justify-content: space-between;
+  align-items: center; padding: 13px 24px;
+  border-radius: var(--r-lg);
+  position: relative;
+}
+
+/* Desktop nav */
+.nav-desktop { display: flex; }
+.nav-links {
+  display: flex; gap: 28px; list-style: none;
+}
+.nav-link-wrap {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 2px;
+  font-size: 13.5px; font-weight: 500;
+  color: var(--text-dim);
+  transition: color 0.28s;
+}
+.nav-link-wrap:hover { color: var(--acc); }
+.nav-underline {
+  height: 1px; background: var(--acc);
+  width: 0%; transition: width 0.3s ease;
+  display: block;
+}
+.nav-link-wrap:hover .nav-underline { width: 100%; }
+
+.header-right {
+  display: flex; align-items: center; gap: 12px;
+}
+
+/* Hamburger */
+.hamburger {
+  display: none;
+  flex-direction: column; gap: 5px;
+  background: transparent; border: none;
+  cursor: pointer; padding: 6px;
+  -webkit-tap-highlight-color: transparent;
+}
+.hamburger span {
+  display: block; width: 22px; height: 2px;
+  background: var(--text); border-radius: 1px;
+  transition: all 0.3s ease;
+  transform-origin: center;
+}
+.hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* Mobile menu */
+.mobile-menu {
+  position: absolute; top: calc(100% + 10px);
+  left: 0; right: 0;
+  border-radius: var(--r-xl);
+  padding: 24px;
+  max-height: 0; overflow: hidden;
+  opacity: 0; pointer-events: none;
+  transition: max-height 0.4s ease, opacity 0.3s ease, padding 0.3s ease;
+}
+.mobile-menu.open {
+  max-height: 400px; opacity: 1;
+  pointer-events: auto;
+}
+.mobile-nav-links {
+  list-style: none;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.mobile-nav-links a {
+  display: block; padding: 14px 8px;
+  font-size: 16px; font-weight: 600;
+  color: var(--text-dim);
+  border-bottom: 1px solid var(--border-dim);
+  transition: color 0.25s;
+}
+.mobile-nav-links a:hover { color: var(--acc); }
+.mobile-nav-links li:last-child a { border-bottom: none; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  .nav-desktop { display: none; }
+  .header-right .btn { display: none; }
+  .hamburger { display: flex; }
+}
+@media (max-width: 480px) {
+  .header-inner { padding: 11px 16px; }
+  .ferrum-n { font-size: 17px; }
+}

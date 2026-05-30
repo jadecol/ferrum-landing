@@ -1,0 +1,70 @@
+.footer {
+  background: var(--negro);
+  border-top: 1px solid rgba(234,189,12,0.1);
+  padding: 68px 0 36px;
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.8fr 1fr 1fr 1fr;
+  gap: 48px;
+  margin-bottom: 52px;
+  padding-bottom: 52px;
+  border-bottom: 1px solid var(--border-dim);
+}
+
+/* Brand */
+.footer-brand .ferrum-logo { display: inline-flex; margin-bottom: 16px; }
+.footer-brand .ferrum-wm  { display: flex; flex-direction: column; }
+.footer-brand .ferrum-n   { font-size: 19px; font-weight: 800; letter-spacing: .06em; color: var(--text); line-height: 1; }
+.footer-brand .ferrum-s   { font-size: 7px; font-weight: 600; letter-spacing: .28em; color: var(--acc); text-transform: uppercase; margin-top: 3px; }
+.footer-brand .ferrum-b   { width: 22px; height: 30px; position: relative; margin-left: 4px; }
+.footer-brand .ferrum-b::before { content: ''; position: absolute; right: 0; top: 0; bottom: 0; width: 2px; background: var(--acc); }
+.footer-brand .ferrum-b::after  { content: ''; position: absolute; right: 0; bottom: 0; width: 11px; height: 2px; background: var(--acc); }
+
+.footer-desc {
+  color: var(--text-muted); font-size: 13.5px;
+  line-height: 1.72; margin-bottom: 18px;
+}
+.footer-contact {
+  display: flex; flex-direction: column; gap: 8px;
+  font-style: normal;
+}
+.footer-contact a {
+  font-size: 13px; color: var(--text-muted);
+  transition: color 0.28s; line-height: 1.5;
+}
+.footer-contact a:hover { color: var(--acc); }
+
+/* Link cols */
+.footer-col-title {
+  font-size: 10px; text-transform: uppercase;
+  letter-spacing: 0.14em; color: var(--text-dim);
+  font-weight: 700; margin-bottom: 16px;
+}
+.footer-links { list-style: none; display: flex; flex-direction: column; gap: 9px; }
+.footer-links a {
+  font-size: 13.5px; color: var(--text-muted);
+  transition: color 0.28s;
+}
+.footer-links a:hover { color: var(--acc); }
+
+/* Bottom */
+.footer-bottom {
+  display: flex; justify-content: space-between;
+  align-items: center; flex-wrap: wrap; gap: 10px;
+  color: var(--text-muted); font-size: 12.5px;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1024px) {
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+  .footer-brand { grid-column: 1 / -1; }
+}
+@media (max-width: 600px) {
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 28px; }
+  .footer { padding: 48px 0 28px; }
+  .footer-bottom { flex-direction: column; align-items: flex-start; gap: 6px; font-size: 11.5px; }
+}
+@media (max-width: 380px) {
+  .footer-grid { grid-template-columns: 1fr; }
+}
